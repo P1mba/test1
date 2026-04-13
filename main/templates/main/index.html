@@ -1,0 +1,10 @@
+{% extends 'main/base.html' %}
+{% block body %}
+{% for con in articles %}
+<h2>{{ con.title }}</h2>
+<h3>{{ con.category }}</h3>
+<p>{{ con.text }}</p>
+<p>Изменено: {{ con.updated_at }}</p>
+<p>Создано: {{ con.created_at }}</p>
+{% endfor %}
+{% endblock %}
