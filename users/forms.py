@@ -12,16 +12,16 @@ class CustomUserCreationForm(UserCreationForm):
                              widget=forms.EmailInput(attrs={'class': 
                                                             'input-register form-control', 
                                                             'placeholder': 'Your email',}))
-    first_name = forms.CharField(required=True, max_length=50, widget=forms.EmailInput(attrs={'class': 
+    first_name = forms.CharField(required=True, max_length=50, widget=forms.TextInput(attrs={'class': 
                                                             'input-register form-control', 
                                                             'placeholder': 'Your email',}))
-    last_name = forms.CharField(required=True, max_length=50, widget=forms.EmailInput(attrs={'class': 
+    last_name = forms.CharField(required=True, max_length=50, widget=forms.TextInput(attrs={'class': 
                                                             'input-register form-control', 
                                                             'placeholder': 'Your email',}))
-    password1 = forms.CharField(required=True, widget=forms.EmailInput(attrs={'class': 'input-register form-control',
+    password1 = forms.CharField(required=True, widget=forms.TextInput(attrs={'class': 'input-register form-control',
                                                                               'plaseholder': 'Your password'}))
     
-    password2 = forms.CharField(required=True, widget=forms.EmailInput(attrs={'class': 'input-register form-control',
+    password2 = forms.CharField(required=True, widget=forms.TextInput(attrs={'class': 'input-register form-control',
                                                                             'plaseholder': 'Your password'}))
     
     marketing_consent1 = forms.BooleanField(required=False, label='I agree to receive commerical, promotional, and marketing communication.',
@@ -32,7 +32,7 @@ class CustomUserCreationForm(UserCreationForm):
     
     class Meta:
         model = User
-        field =['first_name', 'last_name', 'email', 'password1', 'password2', 
+        fields =['first_name', 'last_name', 'email', 'password1', 'password2', 
                 'marketing_consent1', 'marketing_consent2']
     
     def clean_email(self):
@@ -44,8 +44,8 @@ class CustomUserCreationForm(UserCreationForm):
     def save(self, commit=True):
         user = super().save(commit=False)
         user.username = None
-        user.marketing_consent1 = self.cleaned_data('marketing_consent1')
-        user.marketing_consent2 = self.cleaned_data('marketing_consent2')
+        user.marketing_consent1 = self.cleaned_data['marketing_consent1']
+        user.marketing_consent2 = self.cleaned_data['marketing_consent2']
         
         if commit:
             user.save()
@@ -58,7 +58,7 @@ class CustomUserLoginForm(AuthenticationForm):
                                                              'placeholder': 'Your email'}))
     password = forms.CharField(
         label="Password",
-        widget=forms.TextInput(attrs={"autofocus": True,
+        widget=forms.PasswordInput(attrs={"autofocus": True,
                                         'class': 'input-register form-control',
                                         'placeholder': 'Your email'})
     )
@@ -68,7 +68,7 @@ class CustomUserLoginForm(AuthenticationForm):
         password = self.cleaned_data.get('password')
 
         if email and password:
-            self.user_cache = authenticate(self.request, email=email, password=password)
+            self.user_cache = authenticate(self.request, username=email, password=password)
             if self.user_cache is None:
                 raise forms.ValidationError("Invalid email or password.")
             elif not self.user_cache.is_active:
